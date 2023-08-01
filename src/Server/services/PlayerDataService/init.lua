@@ -46,7 +46,7 @@ function PlayerDataService:KnitInit()
     --#region Data Handlers Mapping
     local enumData = {}
     local e = {}
-    for _, module : ModuleScript in script.DataHandlers:GetChildren() do
+    for _, module  in script.DataHandlers:GetChildren() do
         local dataHandler = require(module)
         e[module.Name] = dataHandler
         table.insert(enumData, module.Name)

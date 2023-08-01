@@ -1,9 +1,9 @@
 # Project place file
 /DriftLegends.rbxlx
 /.vscode
-/*.lock
+/wally.lock
 /DriftLegends.code-workspace
-
+.idea
 
 # Roblox Studio lock files
 /*.rbxlx.lock
