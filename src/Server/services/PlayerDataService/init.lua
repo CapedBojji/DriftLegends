@@ -5,27 +5,44 @@ local EnumList = require(ReplicatedStorage.Packages["enum-list"])
 local DataStoreModule = require(ReplicatedStorage.Packages.suphisdatastoremodule)
 local Concur = require(ReplicatedStorage.Packages.concur)
 
-
+local PlayerDataTemplate = require(script.PlayerDataTemplate)
 local PlayerDataService = Knit.CreateService{
     Name = "PlayerDataService",
     Client = {}
 }
 local DataHandlerEnumToModuleMap  = {}
 
+--#region DataStore Initializers and Destructors
+local function StateChanged(state, dataStore)
+    while dataStore.State == false do -- Keep trying to re-open if the state is closed
+        if dataStore:Open(PlayerDataTemplate) ~= "Success" then 
+            task.wait(6) 
+        end
+    end
+end
+
 local function onPlayerAdded(player)
-    
+    local dataStore = DataStoreModule.new("PlayerDataStore__", player.UserId)
+    dataStore.StateChanged:Connect(StateChanged)
+    StateChanged(dataStore.State, dataStore)
 end
 
 local function onPlayerRemoved(player)
-    
+    local dataStore = DataStoreModule.find("Player", player.UserId)
+    if dataStore ~= nil then 
+        dataStore:Destroy() -- If the player leaves datastore object is destroyed allowing the retry loop to stop
+    end 
 end
+--#endregion
 
 function PlayerDataService:KnitInit()
+    --#region Player Events Binders
     Players.onPlayerAdded:Connect(onPlayerAdded)
     Players.onPlayerRemoved:Connect(onPlayerRemoved)
     for _, player in pairs(Players:GetPlayers()) do
         Concur.spawn(onPlayerAdded, player)
     end
+    --#endregion
     --#region Data Handlers Mapping
     local enumData = {}
     local e = {}
