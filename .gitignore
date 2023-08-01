@@ -1,0 +1,10 @@
+# Project place file
+/DriftLegends.rbxlx
+/.vscode
+/*.lock
+/DriftLegends.code-workspace
+
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
